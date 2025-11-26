@@ -25,7 +25,10 @@ const SidebarSection = ({ user, logout }) => {
     { Icon: BarChart3,   label: t('analytics'),   path: '/dashboard/analytics' },
     { Icon: Settings,    label: t('settings'),    path: '/dashboard/settings' },
     { Icon: UserPenIcon,    label: t('Feedback'),    path: '/dashboard/feedbacks' },
-    { Icon: UserPenIcon,    label: t('Forum'),    path: '/dashboard/forum' },
+   
+    ...(user?.email === "admin@gmail.com"
+    ? [{ Icon: UserPenIcon, label: t('Forum'), path: '/dashboard/forum' }]
+    : [])
   ];
 
   const handleLogout = () => {
@@ -96,7 +99,7 @@ const SidebarSection = ({ user, logout }) => {
           className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition"
         >
           <LogOut className="w-5 h-5" />
-          <span className="font-medium">{t('logout')}</span> {/* Use translation */}
+          <span className="font-medium">{t('logout')}</span> 
         </motion.button>
       </div>
     </motion.aside>

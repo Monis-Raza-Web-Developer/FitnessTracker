@@ -797,23 +797,23 @@ app.put("/feedback/:id", async (req, res) => {
   }
 });
 
-// Forum Messages routes
+
 app.post("/forum", async (req, res) => {
   try {
     const { title, message } = req.body;
 
-    // 1. Forum message save karo
+    
     const newMsg = await ForumMessage.create({ title, message });
 
-    // 2. Saare users fetch karo
+   
     const users = await reg_model.find({});
 
-    // 3. Sabko notification bhejo
+   
     for (const user of users) {
       await Notification.create({
         userId: user._id,
         type: "forum",
-        message: `New forum message: "${title}"`,
+        message: `New forum message: "${message}"`,
       });
     }
 
