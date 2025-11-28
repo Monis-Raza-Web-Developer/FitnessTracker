@@ -16,6 +16,7 @@ const goals_model = require("./models/goals");
 const Reminder = require("./models/reminder");
 const Feedback_model = require("./models/feedback")
 const ForumMessage = require("./models/forummessage")
+const Contact_moedel=require("./models/contact")
 const app = express();
 
 app.use(express.json());
@@ -864,6 +865,31 @@ app.delete("/forum/:id", async (req, res) => {
   }
 });
 
+
+
+
+app.post("/contact", async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+    const newMessage = new Contact_moedel({ name, email, subject, message });
+    await newMessage.save();
+
+    return res.json({ success: true, message: "Message saved successfully!" });
+
+  } catch (error) {
+    console.log("Server Error:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+app.get("/messages", async (req, res) => {
+  try {
+    const messages = await Contact_moedel.find().sort({ createdAt: -1 }); 
+    res.status(200).send({message:messages}); 
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching messages" });
+  }
+});
 
 
 const PORT = process.env.PORT || 3000;

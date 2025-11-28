@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
   Home, Dumbbell, Apple, TrendingUp, Target,
   Calendar, BarChart3, Settings, LogOut, ChevronRight,
-  UserPenIcon
+  UserPenIcon,User
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../pages/UseLanguage'; // Add language hook
@@ -27,7 +27,11 @@ const SidebarSection = ({ user, logout }) => {
     { Icon: UserPenIcon,    label: t('Feedback'),    path: '/dashboard/feedbacks' },
    
     ...(user?.email === "admin@gmail.com"
-    ? [{ Icon: UserPenIcon, label: t('Forum'), path: '/dashboard/forum' }]
+    ? [{ Icon: UserPenIcon, label: t('Forum'), path: '/dashboard/forum' },
+      { Icon: User, label: t('Contacts'), path: '/dashboard/contact' },
+
+
+    ]
     : [])
   ];
 

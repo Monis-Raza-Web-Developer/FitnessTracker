@@ -22,6 +22,8 @@ import ContactPage from './pages/ContactPage';
 import JoinPage from './pages/JoinPage';
 import FeedbackForm from './Dashboard/components/FeedbackForm';
 import ForumMessage from './Dashboard/components/ForumMessage';
+import Contact from './Dashboard/components/Contact';
+
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -111,6 +113,7 @@ const App = () => {
             <Route path="/dashboard/reminders" element={<RemindersPage />} />
                   <Route path="/dashboard/feedbacks" element={<FeedbackForm />} />
                   <Route path="/dashboard/forum" element={<ForumMessage />} />
+                    <Route path="/dashboard/contact" element={<Contact />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

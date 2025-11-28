@@ -1,8 +1,27 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, MapPin, Phone, Send, MessageSquare, Clock } from "lucide-react";
+import { z} from 'zod'
+import axios from 'axios'
+
+const API_BASE = "http://localhost:3000";
+const contactSchema =z.object({
+  name:z.any().refine((v) => v !== "" && v != null, {
+    message: "Please enter detail"
+  }),
+  
+  email:z.any().refine((v) => v !== "" && v != null, {
+    message: "Please enter detail"
+  }),
+  subject:z.any().refine((v) => v !== "" && v != null, {
+    message: "Please enter detail"
+  }),
+  message:z.any().refine((v) => v !== "" && v != null, {
+    message: "Please enter detail"
+  }),
 
 
+})
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +30,7 @@ const ContactPage = () => {
     subject: "",
     message: "",
   });
+  const [error,setError]=useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -19,12 +39,37 @@ const ContactPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
-    alert("Thank you for your message! We'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    
+        const result = contactSchema.safeParse({name:formData.name,email:formData.email,subject:formData.subject,message:formData.message})
+    if(!result.success){
+      const formattedErrors = result.error.format();
+
+      setError({
+
+        name:formattedErrors.name?._errors[0] || "",
+        email: formattedErrors.email?._errors[0] || "",
+        subject: formattedErrors.subject?._errors[0] || "",
+        message: formattedErrors.message?._errors[0] || "",
+       
+      })
+      return;
+    }
+    setError("");
+    const res = await axios.post(`${API_BASE}/contact`, formData);
+           
+   
+    console.log("Form submitted:",res.data.message);
+ setFormData({
+  name: "",
+  email: "",
+  subject: "",
+  message: "",
+});
+
+  
+    
   };
 
   const contactInfo = [
@@ -157,7 +202,7 @@ const ContactPage = () => {
               Send Us a Message
             </h2>
             
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6" noValidate>
               <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
@@ -173,6 +218,7 @@ const ContactPage = () => {
                     className="w-full px-4 py-3 bg-black/50 border border-yellow-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all"
                     placeholder="John Doe"
                   />
+                   <p className="mb-4 text-xs" style={{ color: "red" }}>{error.name}</p>
                 </div>
                 
                 <div>
@@ -189,6 +235,7 @@ const ContactPage = () => {
                     className="w-full px-4 py-3 bg-black/50 border border-yellow-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all"
                     placeholder="john@example.com"
                   />
+                   <p className="mb-4 text-xs" style={{ color: "red" }}>{error.email}</p>
                 </div>
               </div>
               
@@ -206,6 +253,7 @@ const ContactPage = () => {
                   className="w-full px-4 py-3 bg-black/50 border border-yellow-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all"
                   placeholder="How can we help?"
                 />
+                 <p className="mb-4 text-xs" style={{ color: "red" }}>{error.subject}</p>
               </div>
               
               <div>
@@ -222,6 +270,7 @@ const ContactPage = () => {
                   className="w-full px-4 py-3 bg-black/50 border border-yellow-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all resize-none"
                   placeholder="Tell us more about your inquiry..."
                 ></textarea>
+                 <p className="mb-4 text-xs" style={{ color: "red" }}>{error.message}</p>
               </div>
               
               <motion.button
